@@ -86,7 +86,7 @@ If you find this project useful, please cite it using the following format
 ```
 @article{chen2021finqa,
   title={FinQA: A Dataset of Numerical Reasoning over Financial Data},
-  author={Chen, Zhiyu and Chen, Wenhu and Smiley, Charese and Shah, Sameena and Borova, Iana and Langdon, Dylan and Moussa, Reema and Beane, Matt and Huang, Ting-Hao and Routledge, Bryan and others},
+  author={Chen, Zhiyu and Chen, Wenhu and Smiley, Charese and Shah, Sameena and Borova, Iana and Langdon, Dylan and Moussa, Reema and Beane, Matt and Huang, Ting-Hao and Routledge, Bryan and Wang, William Yang},
   journal={Proceedings of EMNLP 2021},
   year={2021}
 }
