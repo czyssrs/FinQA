@@ -1,0 +1,10 @@
+add
+subtract
+multiply
+divide
+exp
+greater
+table_sum
+table_average
+table_max
+table_min
