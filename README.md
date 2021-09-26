@@ -49,7 +49,7 @@ python Test.py
 
 It will create an inference folder in the output directory and generate the files used for the program generator. 
 
-To train the program generator in the next step, we need to get the retriever inference results for all the train, dev, and test file. Edit config.py to set "test_file" as the path to the train file, dev file, and test file respectively, also set "model_save_name" correspondingly, and run Test.py to generate the results for all 3 of them. 
+To train the program generator in the next step, we need to get the retriever inference results for all the train, dev, and test files. Edit config.py to set "test_file" as the path to the train file, dev file, and test file respectively, also set "model_save_name" correspondingly, and run Test.py to generate the results for all 3 of them. 
 
 ### The generator
 Go to folder "generator".
@@ -85,8 +85,12 @@ It will generate the result files in the created folder.
 If you find this project useful, please cite it using the following format
 
 @article{chen2021finqa,
+
   title={FinQA: A Dataset of Numerical Reasoning over Financial Data},
+
   author={Chen, Zhiyu and Chen, Wenhu and Smiley, Charese and Shah, Sameena and Borova, Iana and Langdon, Dylan and Moussa, Reema and Beane, Matt and Huang, Ting-Hao and Routledge, Bryan and others},
+
   journal={Proceedings of EMNLP 2021},
+
   year={2021}
 }
