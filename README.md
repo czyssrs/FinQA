@@ -1,7 +1,7 @@
 # FinQA
 The FinQA dataset and code from EMNLP 2021 paper: FinQA: A Dataset of Numerical Reasoning over Financial Data
 <https://arxiv.org/abs/2109.00122>
-![alt text](https://github.com/czyssrs/FinQA/blob/main/eg-intro.pdf)
+![alt text](https://github.com/czyssrs/FinQA/blob/main/eg-intro.pdf?raw=true)
 
 ## Requirements:
 
