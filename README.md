@@ -1,6 +1,5 @@
 # FinQA
 The FinQA dataset and code from EMNLP 2021 paper: FinQA: A Dataset of Numerical Reasoning over Financial Data
-
 <https://arxiv.org/abs/2109.00122>
 
 ## Requirements:
@@ -84,13 +83,11 @@ It will generate the result files in the created folder.
 ## Citation
 If you find this project useful, please cite it using the following format
 
+```
 @article{chen2021finqa,
-
   title={FinQA: A Dataset of Numerical Reasoning over Financial Data},
-
   author={Chen, Zhiyu and Chen, Wenhu and Smiley, Charese and Shah, Sameena and Borova, Iana and Langdon, Dylan and Moussa, Reema and Beane, Matt and Huang, Ting-Hao and Routledge, Bryan and others},
-
   journal={Proceedings of EMNLP 2021},
-
   year={2021}
 }
+```
