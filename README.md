@@ -82,6 +82,44 @@ python Test.py
 It will generate the result files in the created folder. 
 
 
+## Evaluation Scripts
+Go to folder "code/evaluate".
+
+Prepare your prediction file into the following format, as a list of dictionaries, each dictionary contains two fields: the example id and the predicted program. The predicted program is a list of predicted program tokens with the 'EOF' as the last token. For example:
+```
+[
+    {
+        "id": "ETR/2016/page_23.pdf-2",
+        "predicted": [
+            "subtract(",
+            "5829",
+            "5735",
+            ")",
+            "EOF"
+        ]
+    },
+    {
+        "id": "INTC/2015/page_41.pdf-4",
+        "predicted": [
+            "divide(",
+            "8.1",
+            "56.0",
+            ")",
+            "EOF"
+        ]
+    },
+    ...
+]
+```
+
+You can also check the example prediction file 'predictions.json' in this folder for the format. Another file in this folder is the original test file 'test.json'. 
+
+To run evaluation, copy your prediction file here, and run with
+```
+python evaluate.py your_prediction_file test.json
+```
+
+
 ## Citation
 If you find this project useful, please cite it using the following format
 
