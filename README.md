@@ -112,7 +112,7 @@ Prepare your prediction file into the following format, as a list of dictionarie
 ]
 ```
 
-You can also check the example prediction file 'predictions.json' in this folder for the format. Another file in this folder is the original test file 'test.json'. 
+You can also check the example prediction file 'example_predictions.json' in this folder for the format. Another file in this folder is the original test file 'test.json'. 
 
 To run evaluation, copy your prediction file here, and run with
 ```
