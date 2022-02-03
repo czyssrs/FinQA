@@ -4,6 +4,9 @@ The FinQA dataset and code from EMNLP 2021 paper: FinQA: A Dataset of Numerical 
 
 ![alt text](https://github.com/czyssrs/FinQA/blob/main/eg-intro.png?raw=true)
 
+## Leaderboard
+The FinQA challenge leaderboard is on [CodaLab](https://codalab.lisn.upsaclay.fr/competitions/1846). Follow the format in section Evaluation Scripts for result submission. 
+
 ## Requirements:
 
 - pytorch 1.7.1
