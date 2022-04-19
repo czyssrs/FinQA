@@ -4,9 +4,11 @@ The FinQA dataset and code from EMNLP 2021 paper: FinQA: A Dataset of Numerical 
 
 ![alt text](https://github.com/czyssrs/FinQA/blob/main/eg-intro.png?raw=true)
 
-## Leaderboard
+## Leaderboards
 We have two test datasets, one with ground truth references as public test data, named "test.json" in the dataset folder; The other without the references as private test data, named "private_test.json" in the dataset folder. 
+
 The leaderboard for the public test data is [Here](https://codalab.lisn.upsaclay.fr/competitions/1846). 
+
 The leaderboard for the private test data is [Here](https://codalab.lisn.upsaclay.fr/competitions/4138). 
 
 Please follow the format description in section Evaluation Scripts to make submissions. 
