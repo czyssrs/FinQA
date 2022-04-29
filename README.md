@@ -5,7 +5,7 @@ The FinQA dataset and code from EMNLP 2021 paper: FinQA: A Dataset of Numerical 
 ![alt text](https://github.com/czyssrs/FinQA/blob/main/eg-intro.png?raw=true)
 
 ## Updates
-04/29/2022 Fixed the bug of inconsistent formatting issues for postive and negative examples in retriever/finqa_utils.py line 380. 
+04/29/2022 Fixed the bug of inconsistent formatting issues for postive and negative examples in [retriever/finqa_utils.py line 380](https://github.com/czyssrs/FinQA/blob/0603cdd9c68ab0af39efea65361ebfff2abc547c/code/retriever/finqa_utils.py#L380). 
 
 ## Leaderboards
 We have two test datasets, one with ground truth references as public test data, named "test.json" in the dataset folder; The other without the references as private test data, named "private_test.json" in the dataset folder. 
