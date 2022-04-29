@@ -377,7 +377,8 @@ def convert_single_mathqa_example(example, option, is_training, tokenizer, max_s
         for this_table_id in range(len(example.table)):
             if this_table_id not in pos_table_ids:
                 this_table_row = example.table[this_table_id]
-                this_table_line = " ".join(this_table_row)
+                this_table_line = table_row_to_text(
+                    example.table[0], example.table[this_table_id])
                 this_input_feature = wrap_single_pair(
                     tokenizer, example.question, this_table_line, 0, max_seq_length,
                     cls_token, sep_token)
