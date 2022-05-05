@@ -18,6 +18,10 @@ from six.moves import zip
 
 from config import parameters as conf
 
+sys.path.insert(0, '../utils/')
+from general_utils import table_row_to_text
+
+
 
 def str_to_num(text):
     text = text.replace(",", "")
@@ -288,19 +292,6 @@ def remove_space(text_in):
             res.append(tmp)
 
     return " ".join(res)
-
-
-def table_row_to_text(header, row):
-    '''
-    use templates to convert table row to text
-    '''
-    res = ""
-
-    for head, cell in zip(header[1:], row[1:]):
-        res += ("the " + row[0] + " of " + head + " is " + cell + " ; ")
-
-    res = remove_space(res)
-    return res.strip()
 
 
 def read_mathqa_entry(entry, tokenizer):

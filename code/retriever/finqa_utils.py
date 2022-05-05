@@ -19,6 +19,9 @@ from config import parameters as conf
 
 _SPECIAL_TOKENS_RE = re.compile(r"^\[[^ ]*\]$", re.UNICODE)
 
+sys.path.insert(0, '../utils/')
+from general_utils import table_row_to_text
+
 
 def str_to_num(text):
     text = text.replace(",", "")
@@ -188,18 +191,6 @@ def remove_space(text_in):
 
     return " ".join(res)
 
-
-def table_row_to_text(header, row):
-    '''
-    use templates to convert table row to text
-    '''
-    res = ""
-
-    for head, cell in zip(header[1:], row[1:]):
-        res += ("The " + row[0] + " of " + head + " is " + cell + " ; ")
-
-    res = remove_space(res)
-    return res.strip()
 
 
 def get_tf_idf_query_similarity(allDocs, query):
