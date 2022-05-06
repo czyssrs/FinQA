@@ -5,7 +5,7 @@ The FinQA dataset and code from EMNLP 2021 paper: FinQA: A Dataset of Numerical 
 ![alt text](https://github.com/czyssrs/FinQA/blob/main/eg-intro.png?raw=true)
 
 ## Updates
-05/04/2022 Fixed the bug of [table_row_to_text function](https://github.com/czyssrs/FinQA/blob/9e2006a6ed65279a01d62e92e61c02638c7c358d/code/utils/general_utils.py#L21), to be consistent with the table row format in the dataset. 
+05/04/2022 Fixed the bug of [table_row_to_text function](https://github.com/czyssrs/FinQA/blob/9e2006a6ed65279a01d62e92e61c02638c7c358d/code/utils/general_utils.py#L21), to be consistent with the table row format in the dataset. The original incorrect function causes label info leak and gives wrong results higher than actual ones for the retriever. The correct reuslts for FinQANet-Roberta-large should be 61.24 execution accuracy and 58.86 program accuracy. The results for all other baselines drop at the same magnitude. Please see the updated results in the leaderboards. 
 
 04/29/2022 Fixed the bug of inconsistent formatting issues for postive and negative examples in [retriever/finqa_utils.py line 380](https://github.com/czyssrs/FinQA/blob/0603cdd9c68ab0af39efea65361ebfff2abc547c/code/retriever/finqa_utils.py#L380). 
 
