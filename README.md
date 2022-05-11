@@ -12,6 +12,8 @@ The FinQA dataset and code from EMNLP 2021 paper: FinQA: A Dataset of Numerical 
 ## Leaderboards
 We have two test datasets, one with ground truth references as public test data, named "test.json" in the dataset folder; The other without the references as private test data, named "private_test.json" in the dataset folder. 
 
+Note that for submitting to both leaderboard, you should run end-to-end inferences of both the retriever and the generator. We do provide the gold retriever results, as well as the retriever results using our baseline model in the public test data, but this is only intended to help reproduce our results. The final evaluation of the FinQA challenge is based on the result on the private test data, which does not have any intermediate results or gold references. 
+
 The leaderboard for the public test data is [Here](https://codalab.lisn.upsaclay.fr/competitions/1846). 
 
 The leaderboard for the private test data is [Here](https://codalab.lisn.upsaclay.fr/competitions/4138). 
