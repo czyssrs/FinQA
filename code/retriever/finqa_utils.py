@@ -56,10 +56,6 @@ def prog_token_to_indices(prog, numbers, number_indices, max_seq_length,
                     if str_to_num(num) == str_to_num(token):
                         cur_num_idx = num_idx
                         break
-            # print(prog)
-            # print(token)
-            # print(const_list)
-            # print(numbers)
             assert cur_num_idx != -1
             prog_indices.append(op_list_size + const_list_size +
                                 number_indices[cur_num_idx])
@@ -182,16 +178,6 @@ def program_tokenization(original_program):
     return program
 
 
-def remove_space(text_in):
-    res = []
-
-    for tmp in text_in.split(" "):
-        if tmp != "":
-            res.append(tmp)
-
-    return " ".join(res)
-
-
 
 def get_tf_idf_query_similarity(allDocs, query):
     """
@@ -206,20 +192,20 @@ def get_tf_idf_query_similarity(allDocs, query):
 
     vectorizer = TfidfVectorizer(stop_words='english')
     docs_tfidf = vectorizer.fit_transform(allDocs)
-
+    
     query_tfidf = vectorizer.transform([query])
     cosineSimilarities = cosine_similarity(query_tfidf, docs_tfidf).flatten()
-
+    
     # print(cosineSimilarities)
     return cosineSimilarities
 
 
 def wrap_single_pair(tokenizer, question, context, label, max_seq_length,
-                     cls_token, sep_token):
+                    cls_token, sep_token):
     '''
     single pair of question, context, label feature
     '''
-
+    
     question_tokens = tokenize(tokenizer, question)
     this_gold_tokens = tokenize(tokenizer, context)
 
@@ -245,7 +231,7 @@ def wrap_single_pair(tokenizer, question, context, label, max_seq_length,
     assert len(input_ids) == max_seq_length
     assert len(input_mask) == max_seq_length
     assert len(segment_ids) == max_seq_length
-
+    
     this_input_feature = {
         "context": context,
         "tokens": tokens,
@@ -254,9 +240,8 @@ def wrap_single_pair(tokenizer, question, context, label, max_seq_length,
         "segment_ids": segment_ids,
         "label": label
     }
-
+    
     return this_input_feature
-
 
 def convert_single_mathqa_example(example, option, is_training, tokenizer, max_seq_length,
                                   cls_token, sep_token):
@@ -265,94 +250,41 @@ def convert_single_mathqa_example(example, option, is_training, tokenizer, max_s
     """train: 1:3 pos neg. Test: all"""
 
     pos_features = []
-
-    question = example.question
-
-    # positive examples
-    for gold_ind in example.all_positive:
-
-        this_gold_sent = example.all_positive[gold_ind]
-
-        this_input_feature = wrap_single_pair(
-            tokenizer, question, this_gold_sent, 1, max_seq_length,
-            cls_token, sep_token)
-
-        this_input_feature["filename_id"] = example.filename_id
-        this_input_feature["ind"] = gold_ind
-        pos_features.append(this_input_feature)
-
-    num_pos_pair = len(example.all_positive)
-    num_neg_pair = num_pos_pair * conf.neg_rate
-
-    pos_text_ids = []
-    pos_table_ids = []
-    for gold_ind in example.all_positive:
-        if "text" in gold_ind:
-            pos_text_ids.append(int(gold_ind.replace("text_", "")))
-        elif "table" in gold_ind:
-            pos_table_ids.append(int(gold_ind.replace("table_", "")))
-
-    all_text = example.pre_text + example.post_text
-    all_text_ids = range(len(example.pre_text) + len(example.post_text))
-    all_table_ids = range(1, len(example.table))
-
-    all_negs_size = len(all_text) + len(example.table) - \
-        len(example.all_positive)
-    if all_negs_size < 0:
-        all_negs_size = 0
-
     features_neg = []
-    if is_training and option == "tfidf":
-        # train: 1:3
-        # tf-idf
-        all_docs = []
-        for tmp in all_text_ids:
-            all_docs.append(all_text[tmp])
+    
+    question = example.question
+    all_text = example.pre_text + example.post_text
 
-        for tmp in all_table_ids:
-            all_docs.append(table_row_to_text(
-                example.table[0], example.table[tmp]))
+    if is_training:
+        for gold_ind in example.all_positive:
 
-        tfidf_sim_mat = get_tf_idf_query_similarity(all_docs, example.question)
+            this_gold_sent = example.all_positive[gold_ind]
+            this_input_feature = wrap_single_pair(
+                tokenizer, question, this_gold_sent, 1, max_seq_length,
+                cls_token, sep_token)
 
-        tfidf_dict = {}
-        for ind, score in enumerate(tfidf_sim_mat):
-            tfidf_dict[ind] = score
+            this_input_feature["filename_id"] = example.filename_id
+            this_input_feature["ind"] = gold_ind
+            pos_features.append(this_input_feature)
+            
+        num_pos_pair = len(example.all_positive)
+        num_neg_pair = num_pos_pair * conf.neg_rate
+            
+        pos_text_ids = []
+        pos_table_ids = []
+        for gold_ind in example.all_positive:
+            if "text" in gold_ind:
+                pos_text_ids.append(int(gold_ind.replace("text_", "")))
+            elif "table" in gold_ind:
+                pos_table_ids.append(int(gold_ind.replace("table_", "")))
 
-        sorted_dict = sorted(tfidf_dict.items(),
-                             key=lambda kv: kv[1], reverse=True)
-        sample_size = min(num_neg_pair, all_negs_size)
-
-        i = 0
-        for ind, tmp in enumerate(sorted_dict):
-            # text
-            if tmp[0] < len(all_text):
-                if tmp[0] not in pos_text_ids:
-                    this_text = all_text[tmp[0]]
-                    this_input_feature = wrap_single_pair(
-                        tokenizer, example.question, this_text, 0, max_seq_length,
-                        cls_token, sep_token)
-                    this_input_feature["filename_id"] = example.filename_id
-                    this_input_feature["ind"] = "text_" + str(tmp[0])
-                    features_neg.append(this_input_feature)
-            # table
-            else:
-                this_table_id = tmp[0] - len(all_text)
-                if this_table_id not in pos_table_ids:
-                    this_table_row = example.table[this_table_id]
-                    this_table_line = table_row_to_text(
-                        example.table[0], example.table[this_table_id])
-                    this_input_feature = wrap_single_pair(
-                        tokenizer, example.question, this_table_line, 0, max_seq_length,
-                        cls_token, sep_token)
-                    this_input_feature["filename_id"] = example.filename_id
-                    this_input_feature["ind"] = "table_" + str(this_table_id)
-                    features_neg.append(this_input_feature)
-
-            if len(features_neg) >= sample_size:
-                break
-
-    else:
+        all_text_ids = range(len(example.pre_text) + len(example.post_text))
+        all_table_ids = range(1, len(example.table))
+        
+        all_negs_size = len(all_text) + len(example.table) - len(example.all_positive)
+        if all_negs_size < 0:
+            all_negs_size = 0
+                    
         # test: all negs
         # text
         for i in range(len(all_text)):
@@ -364,18 +296,42 @@ def convert_single_mathqa_example(example, option, is_training, tokenizer, max_s
                 this_input_feature["filename_id"] = example.filename_id
                 this_input_feature["ind"] = "text_" + str(i)
                 features_neg.append(this_input_feature)
-            # table
+            # table      
         for this_table_id in range(len(example.table)):
             if this_table_id not in pos_table_ids:
                 this_table_row = example.table[this_table_id]
-                this_table_line = table_row_to_text(
-                    example.table[0], example.table[this_table_id])
+                this_table_line = table_row_to_text(example.table[0], example.table[this_table_id])
                 this_input_feature = wrap_single_pair(
                     tokenizer, example.question, this_table_line, 0, max_seq_length,
                     cls_token, sep_token)
                 this_input_feature["filename_id"] = example.filename_id
                 this_input_feature["ind"] = "table_" + str(this_table_id)
                 features_neg.append(this_input_feature)
+                
+    else:
+        pos_features = []
+        features_neg = []
+        question = example.question
+
+        ### set label as -1 for test examples
+        for i in range(len(all_text)):
+            this_text = all_text[i]
+            this_input_feature = wrap_single_pair(
+                tokenizer, example.question, this_text, -1, max_seq_length,
+                cls_token, sep_token)
+            this_input_feature["filename_id"] = example.filename_id
+            this_input_feature["ind"] = "text_" + str(i)
+            features_neg.append(this_input_feature)
+            # table      
+        for this_table_id in range(len(example.table)):
+            this_table_row = example.table[this_table_id]
+            this_table_line = table_row_to_text(example.table[0], example.table[this_table_id])
+            this_input_feature = wrap_single_pair(
+                tokenizer, example.question, this_table_line, -1, max_seq_length,
+                cls_token, sep_token)
+            this_input_feature["filename_id"] = example.filename_id
+            this_input_feature["ind"] = "table_" + str(this_table_id)
+            features_neg.append(this_input_feature)
 
     return pos_features, features_neg
 
@@ -384,7 +340,10 @@ def read_mathqa_entry(entry, tokenizer):
 
     filename_id = entry["id"]
     question = entry["qa"]["question"]
-    all_positive = entry["qa"]["gold_inds"]
+    if "gold_inds" in entry["qa"]:
+        all_positive = entry["qa"]["gold_inds"]
+    else:
+        all_positive = []
 
     pre_text = entry["pre_text"]
     post_text = entry["post_text"]

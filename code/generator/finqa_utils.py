@@ -18,9 +18,9 @@ from six.moves import zip
 
 from config import parameters as conf
 
+
 sys.path.insert(0, '../utils/')
 from general_utils import table_row_to_text
-
 
 
 def str_to_num(text):
@@ -56,10 +56,6 @@ def prog_token_to_indices(prog, numbers, number_indices, max_seq_length,
                     if str_to_num(num) == str_to_num(token):
                         cur_num_idx = num_idx
                         break
-            # print(prog)
-            # print(token)
-            # print(const_list)
-            # print(numbers)
             assert cur_num_idx != -1
             prog_indices.append(op_list_size + const_list_size +
                                 number_indices[cur_num_idx])
@@ -202,7 +198,7 @@ def convert_single_mathqa_example(example, is_training, tokenizer, max_seq_lengt
     """Converts a single MathQAExample into an InputFeature."""
     features = []
     question_tokens = example.question_tokens
-    if len(question_tokens) > max_seq_length - 2:
+    if len(question_tokens) >  max_seq_length - 2:
         print("too long")
         question_tokens = question_tokens[:max_seq_length - 2]
     tokens = [cls_token] + question_tokens + [sep_token]
@@ -210,17 +206,28 @@ def convert_single_mathqa_example(example, is_training, tokenizer, max_seq_lengt
 
     input_ids = tokenizer.convert_tokens_to_ids(tokens)
 
+
     input_mask = [1] * len(input_ids)
     for ind, offset in enumerate(example.number_indices):
         if offset < len(input_mask):
             input_mask[offset] = 2
         else:
             if is_training == True:
+                # print("\n")
+                # print("################")
+                # print("number not in input")
+                # print(example.original_question)
+                # print(tokens)
+                # print(len(tokens))
+                # print(example.numbers[ind])
+                # print(offset)
 
                 # invalid example, drop for training
                 return features
 
             # assert is_training == False
+
+
 
     padding = [0] * (max_seq_length - len(input_ids))
     input_ids.extend(padding)
@@ -248,7 +255,6 @@ def convert_single_mathqa_example(example, is_training, tokenizer, max_seq_lengt
     number_indices = example.number_indices
     program = example.program
     if program is not None and is_training:
-
         program_ids = prog_token_to_indices(program, numbers, number_indices,
                                             max_seq_length, op_list, op_list_size,
                                             const_list, const_list_size)
@@ -284,21 +290,12 @@ def convert_single_mathqa_example(example, is_training, tokenizer, max_seq_lengt
     return features
 
 
-def remove_space(text_in):
-    res = []
-
-    for tmp in text_in.split(" "):
-        if tmp != "":
-            res.append(tmp)
-
-    return " ".join(res)
-
-
 def read_mathqa_entry(entry, tokenizer):
-
+    
     question = entry["qa"]["question"]
     this_id = entry["id"]
     context = ""
+
 
     if conf.retrieve_mode == "single":
         for ind, each_sent in entry["qa"]["model_input"]:
@@ -322,17 +319,20 @@ def read_mathqa_entry(entry, tokenizer):
             this_sent = table_row_to_text(table[0], row)
             table_text += this_sent
 
-        context = " ".join(entry["pre_text"]) + " " + \
-            " ".join(entry["post_text"]) + " " + table_text
+        context = " ".join(entry["pre_text"]) + " " + " ".join(entry["post_text"]) + " " + table_text
 
     context = context.strip()
     # process "." and "*" in text
     context = context.replace(". . . . . .", "")
     context = context.replace("* * * * * *", "")
-
+        
     original_question = question + " " + tokenizer.sep_token + " " + context.strip()
 
-    options = entry["qa"]["exe_ans"]
+    if "exe_ans" in entry["qa"]:
+        options = entry["qa"]["exe_ans"]
+    else:
+        options = None
+
     original_question_tokens = original_question.split(' ')
 
     numbers = []
@@ -349,7 +349,10 @@ def read_mathqa_entry(entry, tokenizer):
         tok_proc = tokenize(tokenizer, tok)
         question_tokens.extend(tok_proc)
 
+    if "exe_ans" in entry["qa"]:
         answer = entry["qa"]["exe_ans"]
+    else:
+        answer = None
 
     # table headers
     for row in entry["table"]:
@@ -364,14 +367,22 @@ def read_mathqa_entry(entry, tokenizer):
         if 'program' in entry["qa"]:
             original_program = entry["qa"]['program']
             program = program_tokenization(original_program)
-
+        else:
+            program = None
+            original_program = None
+            
     elif conf.program_mode == "nest":
         if 'program_re' in entry["qa"]:
             original_program = entry["qa"]['program_re']
             program = program_tokenization(original_program)
-
+        else:
+            program = None
+            original_program = None
+        
     else:
         program = None
+        original_program = None
+
     return MathQAExample(
         id=this_id,
         original_question=original_question,

@@ -396,7 +396,69 @@ def retrieve_evaluate(all_logits, all_filename_ids, all_inds, output_prediction_
                 
         
         
+def retrieve_evaluate_private(all_logits, all_filename_ids, all_inds, output_prediction_file, ori_file, topn):
+    '''
+    save results to file. calculate recall
+    '''
+    
+    res_filename = {}
+    res_filename_inds = {}
+    
+    for this_logit, this_filename_id, this_ind in zip(all_logits, all_filename_ids, all_inds):
         
+        if this_filename_id not in res_filename:
+            res_filename[this_filename_id] = []
+            res_filename_inds[this_filename_id] = []
+        if this_ind not in res_filename_inds[this_filename_id]:
+            res_filename[this_filename_id].append({
+                "score": this_logit[1],
+                "ind": this_ind
+            })
+            res_filename_inds[this_filename_id].append(this_ind)
+
+    with open(ori_file) as f:
+        data_all = json.load(f)
+    
+    for data in data_all:
+        this_filename_id = data["id"]
+        
+        this_res = res_filename[this_filename_id]
+        
+        sorted_dict = sorted(this_res, key=lambda kv: kv["score"], reverse=True)
+        
+        # table rows
+        table_retrieved = []
+        text_retrieved = []
+
+        # all retrieved
+        table_re_all = []
+        text_re_all = []
+        
+        for tmp in sorted_dict[:topn]:
+            if "table" in tmp["ind"]:
+                table_retrieved.append(tmp)
+            else:
+                text_retrieved.append(tmp)
+
+
+        for tmp in sorted_dict:
+            if "table" in tmp["ind"]:
+                table_re_all.append(tmp)
+            else:
+                text_re_all.append(tmp)
+        
+        data["table_restrieved"] = table_retrieved
+        data["text_retrieved"] = text_retrieved
+
+        data["table_retrieved_all"] = table_re_all
+        data["text_retrieved_all"] = text_re_all
+
+        
+    with open(output_prediction_file, "w") as f:
+        json.dump(data_all, f, indent=4)
+
+    return "private, no res"
+       
     
     
     

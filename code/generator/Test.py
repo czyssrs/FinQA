@@ -169,10 +169,11 @@ def generate_test():
     model.eval()
     generate(test_examples, test_features, model, results_path, mode='test')
 
-    res_file = results_path + "/test/nbest_predictions.json"
-    error_file = results_path + "/test/full_results_error.json"
-    all_res_file = results_path + "/test/full_results.json"
-    evaluate_score(res_file, error_file, all_res_file)
+    if conf.mode != "private":
+        res_file = results_path + "/test/nbest_predictions.json"
+        error_file = results_path + "/test/full_results_error.json"
+        all_res_file = results_path + "/test/full_results.json"
+        evaluate_score(res_file, error_file, all_res_file)
 
 
 def evaluate_score(file_in, error_file, all_res_file):

@@ -48,7 +48,8 @@ class parameters():
     # use seq program or nested program
     program_mode = "seq"
 
-    # train or test
+    # train, test, or private
+    # private: for testing private test data
     device = "cuda"
     mode = "train"
     saved_model_path = output_path + "roberta-large-gold_20210713020324/saved_model/loads/119/model.pt"

@@ -113,8 +113,12 @@ def generate(data_ori, data, model, ksave_dir, mode='valid'):
     if mode == "valid":
         print_res = retrieve_evaluate(
             all_logits, all_filename_id, all_ind, output_prediction_file, conf.valid_file, topn=conf.topn)
-    else:
+    elif model == "test":
         print_res = retrieve_evaluate(
+            all_logits, all_filename_id, all_ind, output_prediction_file, conf.test_file, topn=conf.topn)
+    else:
+        # private data mode
+        print_res = retrieve_evaluate_private(
             all_logits, all_filename_id, all_ind, output_prediction_file, conf.test_file, topn=conf.topn)
 
     write_log(log_file, print_res)
