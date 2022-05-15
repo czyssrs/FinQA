@@ -176,11 +176,11 @@ def read_examples(input_path, tokenizer, op_list, const_list, log_file):
     for entry in tqdm(input_data):
         examples.append(finqa_utils.read_mathqa_entry(entry, tokenizer))
         program = examples[-1].program
-        for tok in program:
-            if 'const_' in tok and not (tok in const_list):
-                const_list.append(tok)
-            elif '(' in tok and not (tok in op_list):
-                op_list.append(tok)
+        # for tok in program:
+        #     if 'const_' in tok and not (tok in const_list):
+        #         const_list.append(tok)
+        #     elif '(' in tok and not (tok in op_list):
+        #         op_list.append(tok)
     return input_data, examples, op_list, const_list
 
 

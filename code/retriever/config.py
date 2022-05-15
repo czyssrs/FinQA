@@ -1,5 +1,3 @@
-
-
 class parameters():
 
     prog_name = "retriever"
