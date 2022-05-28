@@ -113,7 +113,7 @@ def generate(data_ori, data, model, ksave_dir, mode='valid'):
     if mode == "valid":
         print_res = retrieve_evaluate(
             all_logits, all_filename_id, all_ind, output_prediction_file, conf.valid_file, topn=conf.topn)
-    elif model == "test":
+    elif mode == "test":
         print_res = retrieve_evaluate(
             all_logits, all_filename_id, all_ind, output_prediction_file, conf.test_file, topn=conf.topn)
     else:
